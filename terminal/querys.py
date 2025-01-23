@@ -222,10 +222,30 @@ def look_person_bills(name=None, last_name=None):
                     JOIN bills b ON pb.bill_id = b.id
                     JOIN places pl ON b.place_id = pl.id
                     JOIN events e ON b.event_id = e.id
-                    WHERE p.name = ?
+                    WHERE p.name = ? AND p.last_name=?
                     """,
-                    (name, )
+                    (name, last_name)
                     )
     
     return res.fetchall()
-    
+
+def update_person_bills(place=None, date=None, event=None):
+    cur.execute(""" 
+                UPDATE people_bills
+                SET share = (
+                    SELECT b.total / COUNT(pb.person_id)
+                    FROM bills b
+                    JOIN people_bills pb ON pb.bill_id = b.id
+                    JOIN places pl ON pl.id = b.place_id
+                    JOIN events e ON e.id = b.event_id
+                    WHERE b.id = pb.bill_id
+                    AND pl.name = ? AND b.date = ?   -- Replace with the specific place
+                    AND e.name = ?      -- Replace with the specific event
+                )
+                WHERE bill_id = (SELECT b.id FROM bills b 
+                JOIN events e ON e.id = b.event_id
+                JOIN places pl ON pl.id = b.place_id
+                WHERE pl.name = ? AND b.date = ? and e.name = ? )
+                """,
+                (place, date, event, place, date, event))
+    con.commit()

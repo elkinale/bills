@@ -200,11 +200,15 @@ def add_per_bill():
                                                                 place=bills[bill][0], date=bills[bill][1], 
                                                                 event=bills[bill][2],
                                                                 payed=pay)
+                                        querys.update_person_bills(place=bills[bill][0], date=bills[bill][1], 
+                                                            event=bills[bill][2])
                             case '2':
                                 person = input("Number of the person: ")
                                 if person!='' : 
                                     querys.del_people_bills(name=people_bill[int(person)][0], last_name=people_bill[int(person)][1],
                                                             place=bills[bill][0], date=bills[bill][1], 
+                                                            event=bills[bill][2])
+                                    querys.update_person_bills(place=bills[bill][0], date=bills[bill][1], 
                                                             event=bills[bill][2])
                             case _:
                                 os.system('cls' if os.name == 'nt' else 'clear') 
