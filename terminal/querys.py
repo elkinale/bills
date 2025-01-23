@@ -1,6 +1,10 @@
 import sqlite3
+from logger_setup import get_logger
 
-con = sqlite3.connect("bills.db")
+db_path = '/home/elkin/Documents/Python/utilities/bills/terminal/bills.db'
+logger = get_logger(__name__)
+
+con = sqlite3.connect(db_path)
 cur = con.cursor()
 
 def add_people(name, last_name):
@@ -9,8 +13,7 @@ def add_people(name, last_name):
                     (name, last_name))
         con.commit()
     except Exception as e:
-        print(f'The error is: {e}')
-        print("That person already exist")
+        logger.warning(f'The error is: {e}')
 
 def add_place(name):
     try:
@@ -19,8 +22,7 @@ def add_place(name):
                     )
         con.commit()
     except Exception as e:
-        print(f'The error is: {e}')
-        print("That place already exist")
+        logger.warning(f'The error is: {e}')
 
 def add_event(name):
     try:
@@ -29,8 +31,7 @@ def add_event(name):
                     )
         con.commit()
     except Exception as e:
-        print(f'The error is: {e}')
-        print("That event already exist")
+        logger.warning(f'The error is: {e}')
 
 def add_bill(total, place, event, date=None):
     place_id = look_place(id=True, name=place)
@@ -46,22 +47,20 @@ def add_bill(total, place, event, date=None):
                         )
             con.commit()
     except Exception as e:
-        print(f'The error is: {e}')
-        print("That bill already exist")
+        logger.warning(f'The error is: {e}')
 
-def add_people_bills(name=None, last_name=None, place=None, date=None, event=None):
+def add_people_bills(name=None, last_name=None, place=None, date=None, event=None, payed=None):
     
     people_id = look_people(id=True, name=name, last_name=last_name)
     bill_id = look_bill(id=True, place=place, date=date, event=event)
 
     if people_id and bill_id:
         try:
-            cur.execute("INSERT INTO people_bills (person_id, bill_id) VALUES (?,?)",
-                        (people_id[0], bill_id[0]))
+            cur.execute("INSERT INTO people_bills (person_id, bill_id, payed) VALUES (?,?, ?)",
+                        (people_id[0], bill_id[0], payed))
             con.commit()
         except Exception as e:
-            print(f'The error is: {e}')
-            print('The relation already exist')
+            logger.warning(f'The error is: {e}')
 
 def del_people(name, last_name):
     cur.execute("""
@@ -102,22 +101,23 @@ def del_bill(place=None, date=None, event=None):
 
 def del_people_bills(name=None, last_name=None, place=None, date=None, event=None):
     cur.execute("""
-                DELETE FROM people_bills pb
-                JOIN people p ON p.id = pb.people_id
-                JOIN bill b ON b.id = pb.bill_id
-                JOIN place pl ON pl.id = b.place_id
-                JOIN evenet e ON e.id = e.event_id
-                WHERE (p.name = ? OR last_name=?) AND (pl.place = ? OR b.date = ?) and (e.name = ?)
+                DELETE FROM people_bills 
+                WHERE person_id = (SELECT id FROM people WHERE name=? AND last_name=? )
+                AND bill_id = (SELECT b.id FROM bills b 
+                JOIN places pl ON pl.id = b.place_id
+                JOIN events e ON e.id = b.event_id
+                WHERE pl.name=? AND b.date=? AND e.name=?)
                 """,
                 (name, last_name, place, date, event)
                 )
+    con.commit()
 
 def look_people(id=False, name=None, last_name=None):
     if id:
         res = cur.execute("""
                         SELECT id
                         FROM people 
-                        WHERE name = ? OR last_name = ?
+                        WHERE name = ? AND last_name = ?
                         """,
                         (name, last_name)
                         )
@@ -179,9 +179,9 @@ def look_bill(id=False, place=None, date=None, event=None):
         res = cur.execute("""
                         SELECT b.id
                         FROM bills b
-                        JOIN places p ON p.id = b.place_id
+                        JOIN places pl ON pl.id = b.place_id
                         JOIN events e ON e.id = b.event_id
-                        WHERE (p.name=? OR date=?) AND (e.name=?)
+                        WHERE pl.name=? AND b.date=? AND e.name=?
                         """,
                         (place, date, event)
                         )

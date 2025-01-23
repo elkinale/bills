@@ -1,8 +1,13 @@
 import sqlite3
+#from logger_setup import get_logger
+
+#logger = get_logger(__name__)
 
 def new_schema():
     # OPEN DB
-    with sqlite3.connect('bills.db') as con:
+    db_path = '/home/elkin/Documents/Python/utilities/bills/terminal/bills.db'
+    #logger.info('This function was called')
+    with sqlite3.connect(db_path) as con:
         # Create a Cursor
         cur = con.cursor()
         # Enable foreign key support (SQLite has foreign key constraints disabled by default)

@@ -6,6 +6,7 @@ import menu
 new_schema()
 
 while True:
+    os.system('cls' if os.name =='nt' else 'clear' )
     print("Menu")
     print("1. Add person")
     print("2. Add place")
@@ -33,5 +34,3 @@ while True:
             menu.add_per_bill()
         case '6':
             menu.values()
-        case _:
-            os.system('cls' if os.name =='nt' else 'clear' )
