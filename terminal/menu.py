@@ -1,10 +1,15 @@
 import querys
+from logger_setup import get_logger
 import os
 from datetime import datetime
-from logger_setup import get_logger
 import inspect
+import sqlite3
+import pandas as pd
 
 logger = get_logger(__name__)
+db_path = '/home/elkin/Documents/Python/utilities/bills/terminal/bills.db'
+con = sqlite3.connect(db_path)
+cur = con.cursor()
 
 def add_person():
     while True:
@@ -218,4 +223,75 @@ def add_per_bill():
             logger.info(f"The error in {inspect.currentframe().f_code.co_name} is: {e}")      
 
 def values():
-    print("This are the values to each one")
+    while True:
+        try:
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+            print("List of events in the APP:")
+            events = querys.look_event(name='%')
+            if events:
+                for i, event in enumerate(events):
+                    print(f'{i} {" ".join(map(str, event))}')
+
+            event_inp = input("Select the event you want to see the account\n or press \'q\' to exit: ")
+
+            match event_inp:
+                case 'q':
+                    break
+                case event_inp if int(event_inp) < len(events):
+                    cur.execute("""
+                                SELECT p.name, p.last_name, b.id, 
+                                ROUND(SUM(pb.payed) - SUM(pb.share), 0)
+                                FROM people_bills pb
+                                JOIN bills b ON b.id = pb. bill_id
+                                JOIN people p ON p.id = pb.person_id
+                                JOIN events e ON e.id = b.event_id
+                                WHERE e.name = ?
+                                GROUP BY p.name, p.last_name, b.id
+                                """,
+                                (events[int(event_inp)][0],)
+                    )       
+                    bills = cur.fetchall()
+                    b_df = pd.DataFrame(bills, columns=['Name', 'Last_Name', 'Bill id', 'Total'])
+                    total_df = b_df.groupby(['Name', 'Last_Name']).agg({'Total':'sum'}).reset_index()
+                    total_df['Full Name'] = total_df['Name'] + ' ' + total_df['Last_Name']
+                    total_df.drop(['Name', 'Last_Name'], inplace=True, axis=1)
+                    total_df.sort_values(by='Total', ascending=False, inplace=True)
+
+                    balanced_pos = total_df[total_df['Total'] >= 0].reset_index(drop=True)
+                    balanced_neg = total_df[total_df['Total'] < 0].reset_index(drop=True)
+                    balanced_neg['Creditor'], balanced_neg['Amount'] = "", 0.0
+
+                    
+                    max_pos_id = balanced_pos.shape[0]
+                    max_neg_id = balanced_neg.shape[0]
+                    id_pos, id_neg = 0, 0
+                    total = 1
+                    while total != 0:
+
+                        pos_val = balanced_pos.at[id_pos, 'Total']
+                        neg_val = balanced_neg.at[id_neg, 'Total']
+
+                        total = pos_val + neg_val
+                        if total > 0:
+                            balanced_neg.at[id_neg, 'Amount'] = neg_val*-1
+                            balanced_neg.at[id_neg, 'Creditor'] = balanced_pos.at[id_pos, 'Full Name']
+                            balanced_pos.at[id_pos, 'Total'] = total
+                            if max_neg_id == id_neg: continue
+                            id_neg += 1
+                        else:
+                            balanced_neg.at[id_neg, 'Amount'] = pos_val
+                            balanced_neg.at[id_neg, 'Creditor'] = balanced_pos.at[id_pos, 'Full Name']
+                            balanced_neg.at[id_neg, 'Total'] = total
+                            if max_pos_id == id_pos: continue
+                            id_pos +=1
+
+                    balanced_neg['Amount'] = balanced_neg['Amount'].apply(
+                                            lambda x: f'${x:,.0f}'.replace(".", ",").replace(",", "."))
+                    
+                    print(balanced_neg[['Full Name', 'Creditor', 'Amount']])
+                    input('Press any key to Continue')
+                case _:
+                   os.system('cls' if os.name == 'nt' else 'clear') 
+        except Exception as e:
+            logger.info(f"The error in {inspect.currentframe().f_code.co_name} is: {e}") 
