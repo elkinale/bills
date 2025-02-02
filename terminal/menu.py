@@ -12,6 +12,8 @@ con = sqlite3.connect(db_path)
 cur = con.cursor()
 
 def add_person():
+    """Function to add people to the data base and look for people already in data base
+    """
     while True:
         try:
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -45,6 +47,8 @@ def add_person():
             logger.info(f"The error in {inspect.currentframe().f_code.co_name} is: {e}")      
 
 def add_place():
+    """Function to add places to the data base and look for places already in data base
+    """
     while True:
         try:
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -76,6 +80,8 @@ def add_place():
             logger.info(f"The error in {inspect.currentframe().f_code.co_name} is: {e}")      
 
 def add_event():
+    """Function to add events to the data base and look for events already in data base
+    """
     while True:
         try:
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -107,6 +113,8 @@ def add_event():
             logger.info(f"The error in {inspect.currentframe().f_code.co_name} is: {e}")      
 
 def add_bill():
+    """Function to add bills to the data base and look for bills already in data base
+    """
     while True:
         try:
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -149,6 +157,8 @@ def add_bill():
             logger.info(f"The error in {inspect.currentframe().f_code.co_name} is: {e}")      
 
 def add_per_bill():
+    """Function to add relations persons and bills to the data base
+    """
     while True:
         try:
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -223,6 +233,8 @@ def add_per_bill():
             logger.info(f"The error in {inspect.currentframe().f_code.co_name} is: {e}")      
 
 def values():
+    """See the amount each person have to pay to whom in an specific event.
+    """
     while True:
         try:
             os.system('cls' if os.name == 'nt' else 'clear')

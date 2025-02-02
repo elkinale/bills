@@ -4,6 +4,14 @@ from logging.handlers import RotatingFileHandler
 log_path = '/home/elkin/Documents/Python/utilities/bills/terminal/bills.log'
 
 def get_logger(name):
+    """Create a logger and the log file related to the root project.
+
+    Args:
+        name (string): Name of the app the logger is executed.
+
+    Returns:
+        logger: logger to debug some features of the project.
+    """
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
 

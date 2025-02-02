@@ -4,6 +4,9 @@ import sqlite3
 #logger = get_logger(__name__)
 
 def new_schema():
+    """Create the tables related to the project if they do not exist
+    
+    """
     # OPEN DB
     db_path = '/home/elkin/Documents/Python/utilities/bills/terminal/bills.db'
     #logger.info('This function was called')
