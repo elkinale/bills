@@ -22,7 +22,7 @@ jobs:
       - name: Deploy to Raspberry Pi
         run: |
           ssh -o StrictHostKeyChecking=no pi@192.168.0.70 "
-            cd /home/pi/Documents/bills &&
+            cd /home/pi/Documents/bills/web/mysite &&
             git pull origin main &&
             docker-compose down &&
             docker-compose up -d --build &&
