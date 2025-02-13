@@ -21,9 +21,10 @@ jobs:
 
       - name: Deploy to Raspberry Pi
         run: |
-          ssh -o StrictHostKeyChecking=no pi@raspberry_pi_ip "
-            cd /path/to/your_repo &&
+          ssh -o StrictHostKeyChecking=no pi@192.168.0.70 "
+            cd /home/pi/Documents/bills &&
             git pull origin main &&
             docker-compose down &&
-            docker-compose up -d --build
+            docker-compose up -d --build &&
+            docker-compose exec python manage.py migrate
           "
