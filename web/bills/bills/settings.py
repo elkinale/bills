@@ -79,7 +79,7 @@ DATABASES = {
         'NAME': 'app',
         'USER': 'pi',
         'PASSWORD': 'futbolacer16',
-        'HOST': '192.168.0.70',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
