@@ -12,6 +12,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libpq-dev \
+    python3-dev \
+    postgresql-server-dev-all \
     && apt-get clean
 
 # Install Python dependencies
