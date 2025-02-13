@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/elkin/Documents/Python/utilities/bills/web/.venv
+set -gx VIRTUAL_ENV /home/elkin/Documents/Python/utilities/bills/web/bills/.venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
