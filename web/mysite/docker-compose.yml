@@ -23,7 +23,7 @@ services:
       DB_PORT: ${DB_PORT}
     volumes:
       - .:/app
-      - django_logs:/var/log/django
+    #  - django_logs:/var/log/django
     depends_on:
       - db
     ports:
@@ -43,4 +43,4 @@ services:
 
 volumes:
   postgres_data:
-  django_logs:
+  #django_logs:
