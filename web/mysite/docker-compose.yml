@@ -14,13 +14,13 @@ services:
     container_name: django_app
     command: gunicorn --bind 0.0.0.0:8000 mysite.wsgi:application
     environment:
-      - SECRET_KEY: ${SECRET_KEY}
-      - DEBUG: ${DEBUG}
-      - DB_NAME: ${DB_NAME}
-      - DB_USER: ${DB_USER}
-      - DB_PASSWORD: ${DB_PASSWORD}
-      - DB_HOST: ${DB_HOST}
-      - DB_PORT: ${DB_PORT}
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
     volumes:
       - .:/app
     depends_on:

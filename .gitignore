@@ -8,6 +8,7 @@
 # Ignore environment files
 .env
 .venv/
+.github/*
 
 # Ignore log files
 *.log
