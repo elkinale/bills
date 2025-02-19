@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.conf import settings
-# from django.contrib.auth import login
-from .forms import RegistrationForm
+from django.contrib.auth import authenticate, login
+from .forms import RegistrationForm, LoginForm
 
 class HomeView(View):
     def get(self, request):
@@ -15,18 +15,24 @@ class HomeView(View):
             'islocal': islocal,
         }
         return render(request, 'home/main.html', context)
-    
+
+
 class LoginView(View):
-    success_url = 'home:home'
     def get(self, request):
-        return render(request, 'home/login.html')
+        form = LoginForm()
+        return render(request, 'home/login.html', {'form':form})
     
     def post(self, request):
-        context = request
-        return redirect(self.success_url)
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect(reverse_lazy('home:home'))
+        
+        return render(request, 'home/login.html', {'form':form})
     
+
 class RegisterView(View):
-    success_url = reverse_lazy('home:login')
     def get(self, request):
         form = RegistrationForm()
         return render(request, 'home/register.html', {'form':form})
@@ -36,7 +42,7 @@ class RegisterView(View):
         if form.is_valid():
             form.save()
             # login(request, user) # Log the user in after registration
-            return redirect(self.success_url)
-        else:
-            return render(request, 'home/register.html', {'form':form})
+            return redirect(reverse_lazy('home:login'))
+
+        return render(request, 'home/register.html', {'form':form})
     

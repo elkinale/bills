@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
@@ -30,3 +30,10 @@ class RegistrationForm(UserCreationForm):
             raise ValidationError(f'Password must be at least {min_len} characters long.')
         
         return password
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(
+                attrs={'id':'username', 'placeholder':'Username'}))
+    password = forms.CharField(widget=forms.PasswordInput(
+                attrs={'id':'password', 'placeholder':'Password'}))

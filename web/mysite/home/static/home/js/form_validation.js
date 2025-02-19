@@ -2,11 +2,6 @@ document.getElementById('registration-form').addEventListener('submit', function
     const password1 = document.getElementById('password1');
     const password2 = document.getElementById('password2');
 
-    console.log("The password is : " + password1.value)
-    console.log("The confirmation password is : " + password2.value)
-    console.log("The lenght of the password is : " + password1.value.length)
-
-
     if (password1.value.length < 8){
       event.preventDefault();
       password1.classList.add('is-invalid');
