@@ -18,24 +18,26 @@ class HomeView(View):
 
 
 class LoginView(View):
+    template_name = 'home/login.html'
     def get(self, request):
         form = LoginForm()
-        return render(request, 'home/login.html', {'form':form})
+        return render(request, self.template_name, {'form':form})
     
     def post(self, request):
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect(reverse_lazy('home:home'))
+            return redirect(reverse_lazy('bills:main'))
         
-        return render(request, 'home/login.html', {'form':form})
+        return render(request, self.template_name, {'form':form})
     
 
 class RegisterView(View):
+    template_name = 'home/register.html'
     def get(self, request):
         form = RegistrationForm()
-        return render(request, 'home/register.html', {'form':form})
+        return render(request, self.template_name, {'form':form})
     
     def post(self, request):
         form = RegistrationForm(request.POST)
@@ -44,5 +46,5 @@ class RegisterView(View):
             # login(request, user) # Log the user in after registration
             return redirect(reverse_lazy('home:login'))
 
-        return render(request, 'home/register.html', {'form':form})
+        return render(request, self.template_name, {'form':form})
     

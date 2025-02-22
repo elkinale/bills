@@ -15,6 +15,7 @@ from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+APP_NAME = 'FAIR SHARE'
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,7 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
-    'bills.apps.BillsConfig'
+    'bills.apps.BillsConfig',
+    'dal',
+    'dal_select2',
+    'widget_tweaks',
+
 ]
 
 MIDDLEWARE = [
@@ -169,3 +174,11 @@ MEDIA_ROOT = '/app/media/'  # Path to media files in the container
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+
+# Needed for 3.2 and later
+# https://stackoverflow.com/questions/67783120/warning-auto-created-primary-key-used-when-not-defining-a-primary-key-type-by
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+

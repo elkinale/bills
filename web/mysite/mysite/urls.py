@@ -19,9 +19,13 @@ import os
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.static import serve
+from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', auth_views.LoginView.as_view(template_name='home/login.html'), name='login'),
     path('', include('home.urls')),
     path('bills/', include('bills.urls'))
 ]

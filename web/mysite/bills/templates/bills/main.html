@@ -1,0 +1,36 @@
+{% extends "base_menu.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Events</h2>
+    <div style='float:right'>
+    <p>
+        <a href="{% url 'bills:bill_create' %}">Add a Bill</a> |
+        <a href="{% url 'logout' %}?next={% url 'bills:main' %}">Logout</a>
+    </p>
+    <form>
+        <input type="text" placeholder="Search.." name="search"
+        {% if search %} value="{{ search }}" {% endif %}>
+        <button type="submit"><i class="fa fa-search"></i></button>
+      <a href="{% url 'bills:main' %}"><i class="fa fa-undo"></i></a>
+    </form>
+    {% comment %} </div>
+    {% if ev_list%}
+        <div class="row">
+            {% for event in ev_list %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ event.title }}</h5>
+                            <p class="card-text">{{ event.content|truncatewords:15 }}</p>
+                            <a href="{% url 'bills:bill_detail' event.id %}" class="btn btn-primary">View More</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-muted">There's no events available.</p>
+    {% endif %} {% endcomment %}
+</div>
+
+{% endblock%}
